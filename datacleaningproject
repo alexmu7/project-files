@@ -4,12 +4,13 @@ import numpy as np
 # Read in csv
 marketing = pd.read_csv("bank_marketing.csv")
 
-# Split into the three tables
+# Subset the entire data file into three different tables for better visualization 'client', 'campaign','economics'
 client = marketing[["client_id", "age", "job", "marital", 
                     "education", "credit_default", "mortgage"]]
 campaign = marketing[["client_id", "number_contacts", "month", "day", 
                "contact_duration", "previous_campaign_contacts", "previous_outcome", "campaign_outcome"]]
 economics = marketing[["client_id", "cons_price_idx", "euribor_three_months"]]
+
 
 ## Editing the client dataset
 # Clean education column
@@ -19,12 +20,13 @@ client["education"] = client["education"].replace("unknown", np.NaN)
 # Clean job column
 client["job"] = client["job"].str.replace(".", "_")
 
-# Clean and convert client columns to bool data type
+# Converting columns into desired data types
 for col in ["credit_default", "mortgage"]:
   client[col] = client[col].map({"yes": 1,
                                  "no": 0,
                                  "unknown": 0})
   client[col] = client[col].astype(bool)
+
 
 # Editing the campaign dataset
 # Change campaign_outcome to binary values
@@ -39,7 +41,7 @@ campaign["previous_outcome"] = campaign["previous_outcome"].map({"success": 1,
 # Add year column
 campaign["year"] = "2022"
 
-# Convert day to string
+# Convert day to string data type
 campaign["day"] = campaign["day"].astype(str)
 
 # Add last_contact_date column
@@ -55,6 +57,7 @@ for col in ["campaign_outcome", "previous_outcome"]:
 
 # Drop unneccessary columns
 campaign.drop(columns=["month", "day", "year"], inplace=True)
+
 
 # Save tables to individual csv files
 client.to_csv("client.csv", index=False)
